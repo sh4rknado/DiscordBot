@@ -21,6 +21,7 @@ class SharkyBot:
         async def on_ready():
             await self.bot.change_presence(activity=discord.Game('Tide of War'))
             self.bot.loop.create_task(abys_function())
+            self.bot.loop.create_task(annonce_quotidienne())
             print("Bot Ready !")
 
         @self.bot.event
@@ -247,7 +248,7 @@ class SharkyBot:
                     # Waitting 24H
                     await asyncio.sleep(86400)
 
-        async def annonce_quotidienne(_desc):
+        async def annonce_quotidienne():
             self.bot.annonce_quotidienne = False
             next_day = datetime.now().day
 
@@ -260,7 +261,7 @@ class SharkyBot:
 
                     desc = "@eveyone \n\n"
                     desc += "Hello tout le monde je suis SharkyBot,\n Je vous rappelle ceci : \n\n"
-                    desc += _desc
+                    desc += self.bot.desc_annonce_quotidienne
 
                     mbed = discord.Embed(
                         colour=(discord.Colour.dark_blue()),
