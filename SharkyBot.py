@@ -199,7 +199,7 @@ class SharkyBot:
 
         @self.bot.command()
         async def clear_all(ctx, channel=None):
-            await self.bot.clear_all(ctx, channel)
+            await self.bot.clear_all(ctx=ctx, channel=channel)
 
         # ////////////////////////// < TIMER FUNCTION > /////////////////////////////////////////
 
@@ -246,6 +246,37 @@ class SharkyBot:
                     self.abyss_annonce = False
                     # Waitting 24H
                     await asyncio.sleep(86400)
+
+        async def annonce_quotidienne(_desc):
+            self.bot.annonce_quotidienne = False
+            next_day = datetime.now().day
+
+            while True:
+                hours = datetime.now().hour
+                day = datetime.now().day
+
+                if day == next_day and hours == self.bot.hours_annonce_quotidienne and self.bot.annonce_quotidienne is False:
+                    print("Il est 16H00 je dois faire une annonce !")
+
+                    desc = "@eveyone \n\n"
+                    desc += "Hello tout le monde je suis SharkyBot,\n Je vous rappelle ceci : \n\n"
+                    desc += _desc
+
+                    mbed = discord.Embed(
+                        colour=(discord.Colour.dark_blue()),
+                        title=f"Sharkybot Rappel ",
+                        description=desc
+                    )
+
+                    await self.bot.clear_all(channel=self.bot.annonce_channel)
+                    self.bot.annonce_channel.send(embed=mbed)
+                    self.bot.annonce_quotidienne = True
+                    await asyncio.sleep(300)
+
+                elif day != next_day:
+                    print("Le jour quotidien a changé !")
+                    next_day = day
+                    self.bot.annonce_quotidienne = False
 
         # @self.bot.command()
         # async def next_event(ctx, current_event=None):

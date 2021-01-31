@@ -19,6 +19,9 @@ class ASharkyBot(commands.Bot):
         self.annonce_channel = None
         self.abyss_day = None
         self.token = None
+        self.desc_annonce_quotidienne = None
+        self.hours_annonce_quotidienne = None
+        self.annonce_quotidienne = False
         self.init()
 
     # ////////////////////////// < INIT FUNCTION > /////////////////////////////////////////
@@ -35,6 +38,8 @@ class ASharkyBot(commands.Bot):
             self.command_prefix = config['BOTDATA']['PREFIX']
             self.abyss_day = config['BOTDATA']['ABYSS_DAY']
             self.token = str(config['BOTDATA']['TOKEN'])
+            self.desc_annonce_quotidienne = config['ANNONCES']['GENERALE']
+            self.hours_annonce_quotidienne = int(config['ANNONCES']['HOURS'])
         else:
             print("File not found : config.ini ")
 
@@ -83,7 +88,7 @@ class ASharkyBot(commands.Bot):
         perm = ctx.author.guild_permissions
         return perm.administrator
 
-    async def clear_all(self, ctx, channel=None):
+    async def clear_all(self, ctx=None, channel=None):
         if channel is None:
             await ctx.channel.purge(limit=1)
 
@@ -93,6 +98,7 @@ class ASharkyBot(commands.Bot):
                 await ctx.channel.send(f"SharkyBot dis que {ctx.author.mention} n'est pas authorisé a faire sa !")
         else:
             await channel.purge()
+
 
     # ////////////////////////// < ANNONCES FUNCTION > /////////////////////////////////////////
 
@@ -123,31 +129,3 @@ class ASharkyBot(commands.Bot):
 
             await self.annonce_channel.send(embed=mbed)
             await asyncio.sleep(_timers)
-
-    async def annonce_quotidienne(self, hours_global, _desc):
-        annonce = False
-        first_day = datetime.now().day
-
-        while True:
-            hours = datetime.now().hour
-            day = datetime.now().day
-
-            if day != first_day:
-                first_day = day
-                annonce = False
-
-            if hours == hours_global and not annonce:
-                desc = "@eveyone \n\n"
-                desc += "Hello tout le monde je suis SharkyBot,\n Je vous rappelle ceci : \n\n"
-                desc += _desc
-
-                mbed = discord.Embed(
-                    colour=(discord.Colour.dark_blue()),
-                    title=f"Sharkybot Rappel ",
-                    description=desc
-                )
-
-                await self.clear_all(None, channel=self.annonce_channel)
-                await self.annonce_channel.send(embed=mbed)
-                annonce = True
-            await asyncio.sleep(300)
