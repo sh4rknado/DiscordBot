@@ -24,4 +24,4 @@ class SharkyBot:
 
 if __name__ == '__main__':
     bot = SharkyBot()
-    bot.running_bot('ODAxODkyNDU4ODMyMzMwNzcy.YAnSjA.PFnIRI4KVIPXbb66_Wl_YhwYMrA')
+    bot.running_bot('')
