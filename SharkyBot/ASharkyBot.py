@@ -11,6 +11,7 @@ import discord
 class ASharkyBot(commands.Bot):
 
     def __init__(self, command_prefix, **options):
+        super().__init__(command_prefix, **options)
         self.goodbye_channel = None
         self.goodbye_channel_img = None
         self.welcom_channel = None
@@ -19,7 +20,6 @@ class ASharkyBot(commands.Bot):
         self.abyss_day = None
         self.token = None
         self.init()
-        super().__init__(command_prefix, **options)
 
     # ////////////////////////// < INIT FUNCTION > /////////////////////////////////////////
 
@@ -34,7 +34,7 @@ class ASharkyBot(commands.Bot):
             self.goodbye_channel_img = config['BOTDATA']['GOODBYE_CHANNEL_IMG']
             self.command_prefix = config['BOTDATA']['PREFIX']
             self.abyss_day = config['BOTDATA']['ABYSS_DAY']
-            self.token = config['BOTDATA']['TOKEN']
+            self.token = str(config['BOTDATA']['TOKEN'])
         else:
             print("File not found : config.ini ")
 
