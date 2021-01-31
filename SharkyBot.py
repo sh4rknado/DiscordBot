@@ -9,15 +9,18 @@ import asyncio
 class SharkyBot:
     def __init__(self):
         intents = discord.Intents.all()
+        intents.members = True
         self.bot = ASharkyBot(command_prefix='$', intents=intents)
         self.client = discord.Client()
         self.bot.timer_manager = timers.TimerManager(self.bot)
+        self.abyss_annonce = False
 
         # ////////////////////////// < EVENT FUNCTION > /////////////////////////////////////////
 
         @self.bot.event
         async def on_ready():
             await self.bot.change_presence(activity=discord.Game('Tide of War'))
+            self.bot.loop.create_task(abys_function())
             print("Bot Ready !")
 
         @self.bot.event
@@ -98,8 +101,8 @@ class SharkyBot:
             if self.bot.is_admin(ctx):
                 if username is not None:
                     member = self.bot.get_member(username)
-                    role = self.bot.get_role("goulag")
-                    role_lsb = self.bot.get_role("lsb member")
+                    role = self.bot.get_role("GOULAG")
+                    role_lsb = self.bot.get_role("lsb menber")
                     id = self.bot.get_channel_id("au-goulag")
                     channel = self.bot.get_channel(id)
                     await member.add_roles(role)
@@ -117,8 +120,8 @@ class SharkyBot:
             if self.bot.is_admin(ctx):
                 if username is not None:
                     member = self.bot.get_member(username)
-                    role = self.bot.get_role("goulag")
-                    role_lsb = self.bot.get_role("lsb member")
+                    role = self.bot.get_role("GOULAG")
+                    role_lsb = self.bot.get_role("lsb menber")
                     id = self.bot.get_channel_id("au-goulag")
                     channel = self.bot.get_channel(id)
                     await member.remove_roles(role)
@@ -231,6 +234,18 @@ class SharkyBot:
                 await ctx.channel.send(f"SharkyBot dis que {ctx.author.mention} n'est pas authorisé a faire sa !")
 
         # ////////////////////////// < EVENTS FUNCTION > /////////////////////////////////////////
+
+        async def abys_function():
+            self.abyss_annonce = False
+            while True:
+                if self.bot.is_abyss() and self.abyss_annonce is False:
+                    desc = "L'antre des abysses est réinitialisée aujourd'hui ! Bon jeu et Bonne chances dans les tréfonds :D"
+                    self.bot.loop.create_task(on_reminder(desc))
+                    self.abyss_annonce = True
+                else:
+                    self.abyss_annonce = False
+                    # Waitting 24H
+                    await asyncio.sleep(86400)
 
         # @self.bot.command()
         # async def next_event(ctx, current_event=None):

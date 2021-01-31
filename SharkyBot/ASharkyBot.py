@@ -59,7 +59,6 @@ class ASharkyBot(commands.Bot):
             name = re.findall(r'\d+', name)
             id = int(name[0])
             for m in members:
-                print(m.name)
                 if m.id == id:
                     return m
 
